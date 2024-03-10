@@ -31,7 +31,7 @@ type Item struct {
 // database
 func initDB() {
 	var err error
-	dsn := "user=your_username password=your_password dbname=your_database sslmode=disable"
+	dsn := "user=herisa password=1234 dbname=order sslmode=disable"
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
