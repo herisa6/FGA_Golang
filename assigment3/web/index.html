@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .status-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .status-box {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 0 10px;
+            width: 200px;
+            text-align: center;
+        }
+        .status-water {
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+        .status-wind {
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+        .status {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .danger {
+            background-color: #ffcccc;
+        }
+        .warning {
+            background-color: #ffff99;
+        }
+    </style>
+</head>
+<body>
+    <h1>Status</h1>
+    <div class="status-container">
+        <div class="status-box status-water" id="water-box">
+            <div class="status" id="water-status">Loading...</div>
+            <div class="status">Water Level</div>
+        </div>
+        <div class="status-box status-wind" id="wind-box">
+            <div class="status" id="wind-status">Loading...</div>
+            <div class="status">Wind Speed</div>
+        </div>
+    </div>
+    <script>
+        
+        function getStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('water-status').innerText = `${data.water_status} (${data.status.water} meter)`;
+                    document.getElementById('wind-status').innerText = `${data.wind_status} (${data.status.wind} meter/second)`;
+
+                    // Change box color based on status
+                    if (data.water_status === 'Bahaya') {
+                        document.getElementById('water-box').classList.add('danger');
+                    } else if (data.water_status === 'Siaga') {
+                        document.getElementById('water-box').classList.add('warning');
+                    } else {
+                        document.getElementById('water-box').classList.remove('danger');
+                        document.getElementById('water-box').classList.remove('warning');
+                    }
+
+                    if (data.wind_status === 'Bahaya') {
+                        document.getElementById('wind-box').classList.add('danger');
+                    } else if (data.wind_status === 'Siaga') {
+                        document.getElementById('wind-box').classList.add('warning');
+                    } else {
+                        document.getElementById('wind-box').classList.remove('danger');
+                        document.getElementById('wind-box').classList.remove('warning');
+                    }
+                })
+                .catch(error => console.error('Error fetching status:', error));
+        }
+
+        
+        getStatus();
+
+        // Refresh status every 5 seconds
+        setInterval(getStatus, 5000);
+    </script>
+</body>
+</html>
